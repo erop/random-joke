@@ -9,6 +9,7 @@ use App\Service\JokeService;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SendJokeHandlerTest extends TestCase
@@ -23,6 +24,7 @@ class SendJokeHandlerTest extends TestCase
         $jokeService = $this->createMock(JokeService::class);
         $eventBus = $this->createMock(MessageBusInterface::class);
         $handler = new SendJokeHandler($jokeService, $eventBus);
+        $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
 
         $jokeService->expects($this->once())
             ->method('getJokeByCategory')

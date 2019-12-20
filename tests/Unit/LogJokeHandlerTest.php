@@ -7,6 +7,7 @@ use App\MessageHandler\Command\LogJokeHandler;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class LogJokeHandlerTest extends TestCase
 {
@@ -21,6 +22,7 @@ class LogJokeHandlerTest extends TestCase
             ->method('info')
             ->with($command->getJoke());
         $handler = new LogJokeHandler($logger);
+        $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
         $handler($command);
     }
 

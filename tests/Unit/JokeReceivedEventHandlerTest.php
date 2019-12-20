@@ -9,6 +9,7 @@ use App\MessageHandler\Event\JokeReceivedEventHandler;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class JokeReceivedEventHandlerTest extends TestCase
@@ -31,6 +32,7 @@ class JokeReceivedEventHandlerTest extends TestCase
             ->with($logCommand)
             ->willReturn(new Envelope($emailCommand));
         $handler = new JokeReceivedEventHandler($commandBus);
+        $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
         $handler($event);
     }
 

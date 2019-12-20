@@ -2,12 +2,16 @@
 
 namespace App\Tests\Unit;
 
+use App\MessageHandler\Command\SendJokeEmailHandler;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class SendJokeEmailHandlerTest extends TestCase
 {
-    public function testSomething()
+    public function testEmailWithJokeIsSent(): void
     {
-        $this->assertTrue(true);
+        $handler = new SendJokeEmailHandler();
+        $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
+
     }
 }

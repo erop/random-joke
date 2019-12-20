@@ -7,9 +7,10 @@ namespace App\MessageHandler\Event;
 use App\Message\Command\LogJoke;
 use App\Message\Command\SendJokeEmail;
 use App\Message\Event\JokeReceivedEvent;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class JokeReceivedEventHandler
+class JokeReceivedEventHandler implements MessageHandlerInterface
 {
 
     /**
