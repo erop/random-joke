@@ -3484,16 +3484,16 @@
         },
         {
             "name": "symfony/mailer",
-            "version": "v5.0.1",
+            "version": "v5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mailer.git",
-                "reference": "f7478f49f27d8c55582dcb482f1ca8a90e0dfa30"
+                "reference": "82644dc053ccf80e2d67fd79976a2c0d08bb53c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mailer/zipball/f7478f49f27d8c55582dcb482f1ca8a90e0dfa30",
-                "reference": "f7478f49f27d8c55582dcb482f1ca8a90e0dfa30",
+                "url": "https://api.github.com/repos/symfony/mailer/zipball/82644dc053ccf80e2d67fd79976a2c0d08bb53c2",
+                "reference": "82644dc053ccf80e2d67fd79976a2c0d08bb53c2",
                 "shasum": ""
             },
             "require": {
@@ -3547,7 +3547,7 @@
             ],
             "description": "Symfony Mailer Component",
             "homepage": "https://symfony.com",
-            "time": "2019-12-01T08:48:26+00:00"
+            "time": "2019-12-07T16:40:37+00:00"
         },
         {
             "name": "symfony/messenger",
