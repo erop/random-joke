@@ -8,16 +8,16 @@ use App\Message\Command\SendJokeEmail;
 use App\Message\Event\JokeReceivedEvent;
 use App\MessageHandler\Event\JokeReceivedEventHandler;
 use Generator;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class JokeReceivedEventHandlerTest extends TestCase
+class JokeReceivedEventHandlerTest extends CustomTestCase
 {
 
+    /**
+     * @testdox Check all the needed services are called on valid event
+     */
     public function testEventHandledSuccessfully(): void
     {
         $event = new JokeReceivedEvent('email1@example.com', 'Mwa-ha-ha!');
@@ -55,17 +55,6 @@ class JokeReceivedEventHandlerTest extends TestCase
         return new LogJoke($event->getEmail(), $event->getJoke());
     }
 
-    private function getValidatorWithErrorsCount(int $errorsCount): ValidatorInterface
-    {
-        $errorList = $this->createMock(ConstraintViolationList::class);
-        $errorList->method('count')->willReturn($errorsCount);
-        $validator = $this->createMock(ValidatorInterface::class);
-        $validator->expects($this->once())
-            ->method('validate')
-            ->willReturn($errorList);
-        return $validator;
-    }
-
     public function getInvalidJokeReceivedEvents(): Generator
     {
         yield [new JokeReceivedEvent('email2@example.com', ''), 1];
@@ -77,6 +66,7 @@ class JokeReceivedEventHandlerTest extends TestCase
      * @param JokeReceivedEvent $event
      * @param int $errorsCount
      * @dataProvider getInvalidJokeReceivedEvents
+     * @testdox Check an exception is thrown on invalid event
      */
     public function testInvalidEventRaisesException(JokeReceivedEvent $event, int $errorsCount): void
     {
