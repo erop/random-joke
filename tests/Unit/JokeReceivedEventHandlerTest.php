@@ -21,15 +21,6 @@ class JokeReceivedEventHandlerTest extends TestCase
     public function testEventHandledSuccessfully(): void
     {
         $event = new JokeReceivedEvent('email1@example.com', 'Mwa-ha-ha!');
-        $this->doHandleEvent($event, $this->getValidatorWithErrorsCount(0));
-    }
-
-    /**
-     * @param JokeReceivedEvent $event
-     * @param ValidatorInterface $validator
-     */
-    public function doHandleEvent(JokeReceivedEvent $event, ValidatorInterface $validator): void
-    {
         $emailCommand = $this->getSendJokeEmailCommand($event);
         $logCommand = $this->getLogJokeCommand($event);
         $commandBus = $this->createMock(MessageBusInterface::class);
@@ -41,7 +32,7 @@ class JokeReceivedEventHandlerTest extends TestCase
             ->method('dispatch')
             ->with($logCommand)
             ->willReturn(new Envelope($emailCommand));
-        $handler = new JokeReceivedEventHandler($commandBus, $validator);
+        $handler = new JokeReceivedEventHandler($commandBus, $this->getValidatorWithErrorsCount(0));
         $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
         $handler($event);
     }
@@ -90,8 +81,10 @@ class JokeReceivedEventHandlerTest extends TestCase
     public function testInvalidEventRaisesException(JokeReceivedEvent $event, int $errorsCount): void
     {
         $this->expectException(JokeReceivedEventException::class);
-        $this->doHandleEvent($event, $this->getValidatorWithErrorsCount($errorsCount));
+        $commandBus = $this->createMock(MessageBusInterface::class);
+        $handler = new JokeReceivedEventHandler($commandBus, $this->getValidatorWithErrorsCount($errorsCount));
+        $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
+        $handler($event);
     }
-
 
 }
