@@ -4,14 +4,18 @@
 namespace App\Message\Event;
 
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class JokeReceivedEvent
 {
     /**
      * @var string
+     * @Assert\Email()
      */
     private $email;
     /**
      * @var string
+     * @Assert\NotBlank()
      */
     private $joke;
 
