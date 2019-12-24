@@ -51,6 +51,7 @@ class SendJokeEmailHandler implements MessageHandlerInterface
             throw new SendJokeEmailException((string)$errors);
         }
         $email = (new Email())
+            ->from('admin@project.com')
             ->to($command->getEmail())
             ->subject($this->subject)
             ->text($command->getJoke());

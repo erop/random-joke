@@ -3,5 +3,11 @@
 {% block title %}Hello DefaultController!{% endblock %}
 
 {% block body %}
-    <h1>Hello World</h1>
+    <div class="container">
+        {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.category) }}
+        <button type="submit" class="btn btn-primary">Send joke</button>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

@@ -61,18 +61,17 @@ class JokeService
         $this->jokeCategoriesTtl = $jokeCategoriesTtl;
     }
 
-    /**
-     * @param string $category
-     * @return string
-     * @throws \Psr\Cache\InvalidArgumentException
-     */
     public function getJokeByCategory(string $category): string
     {
         $content = $this->makeRequest('GET', self::RANDOM_JOKE_URL . '?limitTo=' . $category);
         $checkObject = json_decode($content, false);
         if ($checkObject->type === 'NoSuchCategoryException') {
-            $this->cache->delete(self::CATEGORIES_CACHE_KEY);
-            throw new NoSuchCategoryException('No such category: ' . $category);
+            try {
+                $this->cache->delete(self::CATEGORIES_CACHE_KEY);
+                throw new NoSuchCategoryException('No such category: ' . $category);
+            } catch (\Psr\Cache\InvalidArgumentException $e) {
+                throw new \RuntimeException('Invalid cache key provided: ' . self::CATEGORIES_CACHE_KEY);
+            }
         }
         /** @var MainJokeResponse $object */
         $object = $this->serializer->deserialize($content, MainJokeResponse::class, 'json');
@@ -96,19 +95,21 @@ class JokeService
         }
     }
 
-    /**
-     * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
-     */
     public function getCategories(): array
     {
-        return $this->cache->get(
-            self::CATEGORIES_CACHE_KEY,
-            static function (ItemInterface $item) {
-                $item->expiresAfter($this->jokeCategoriesTtl);
-                return $this->getUncachedCategories();
-            }
-        );
+        $that = $this;
+        $ttl = $this->jokeCategoriesTtl;
+        try {
+            return $this->cache->get(
+                self::CATEGORIES_CACHE_KEY,
+                static function (ItemInterface $item) use ($that, $ttl) {
+                    $item->expiresAfter($ttl);
+                    return $that->getUncachedCategories();
+                }
+            );
+        } catch (\Psr\Cache\InvalidArgumentException $e) {
+            throw new RuntimeException('Wrong cache key provided: ' . self::CATEGORIES_CACHE_KEY);
+        }
     }
 
     /**

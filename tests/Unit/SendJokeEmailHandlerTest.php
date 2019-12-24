@@ -22,6 +22,7 @@ class SendJokeEmailHandlerTest extends CustomTestCase
         $mailer = $this->createMock(MailerInterface::class);
         $subject = 'Joke Email Subject';
         $email = (new Email())
+            ->from('admin@project.com')
             ->to($command->getEmail())
             ->subject($subject)
             ->text($command->getJoke());

@@ -6,12 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testSomething()
+    public function testMainFormIsBuilt(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
-
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Hello World');
+        $buttonCrawler = $crawler->selectButton('Send joke');
+        $this->assertNotNull($buttonCrawler->form());
     }
 }
