@@ -4,6 +4,7 @@
 namespace App\Message\Command;
 
 
+use App\Validator\Constraints\JokeCategory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class SendJoke
@@ -16,6 +17,8 @@ class SendJoke
 
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @JokeCategory()
      */
     private $category;
 
