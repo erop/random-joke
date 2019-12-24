@@ -7,9 +7,12 @@ namespace App\Service;
 use App\Dto\CategoriesJokeResponse;
 use App\Dto\MainJokeResponse;
 use App\Exception\Http\WrongContentTypeException;
+use App\Exception\NoSuchCategoryException;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -19,6 +22,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class JokeService
 {
     private const CATEGORIES_URL = 'http://api.icndb.com/categories';
+    private const CATEGORIES_CACHE_KEY = 'joke_categories';
     private const RANDOM_JOKE_URL = 'http://api.icndb.com/jokes/random';
 
     /**
@@ -29,21 +33,47 @@ class JokeService
      * @var SerializerInterface
      */
     private $serializer;
+    /**
+     * @var CacheInterface
+     */
+    private $cache;
+    /**
+     * @var int
+     */
+    private $jokeCategoriesTtl;
 
     /**
      * JokeService constructor.
      * @param HttpClientInterface $client
      * @param SerializerInterface $serializer
+     * @param CacheInterface $cache
+     * @param int $jokeCategoriesTtl
      */
-    public function __construct(HttpClientInterface $client, SerializerInterface $serializer)
-    {
+    public function __construct(
+        HttpClientInterface $client,
+        SerializerInterface $serializer,
+        CacheInterface $cache,
+        int $jokeCategoriesTtl
+    ) {
         $this->client = $client;
         $this->serializer = $serializer;
+        $this->cache = $cache;
+        $this->jokeCategoriesTtl = $jokeCategoriesTtl;
     }
 
+    /**
+     * @param string $category
+     * @return string
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     public function getJokeByCategory(string $category): string
     {
         $content = $this->makeRequest('GET', self::RANDOM_JOKE_URL . '?limitTo=' . $category);
+        $checkObject = json_decode($content, false);
+        if ($checkObject->type === 'NoSuchCategoryException') {
+            $this->cache->delete(self::CATEGORIES_CACHE_KEY);
+            throw new NoSuchCategoryException('No such category: ' . $category);
+        }
         /** @var MainJokeResponse $object */
         $object = $this->serializer->deserialize($content, MainJokeResponse::class, 'json');
         return $object->value->joke;
@@ -66,9 +96,26 @@ class JokeService
         }
     }
 
+    /**
+     * @return array
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     public function getCategories(): array
     {
-        /** @var CategoriesJokeResponse $object */
+        return $this->cache->get(
+            self::CATEGORIES_CACHE_KEY,
+            static function (ItemInterface $item) {
+                $item->expiresAfter($this->jokeCategoriesTtl);
+                return $this->getUncachedCategories();
+            }
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getUncachedCategories(): array
+    {
         $object = $this->serializer->deserialize(
             $this->makeRequest('GET', self::CATEGORIES_URL),
             CategoriesJokeResponse::class,
@@ -76,4 +123,5 @@ class JokeService
         );
         return $object->value;
     }
+
 }
