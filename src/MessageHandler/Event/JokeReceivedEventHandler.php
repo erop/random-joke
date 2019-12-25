@@ -40,9 +40,10 @@ class JokeReceivedEventHandler implements MessageHandlerInterface
             throw new JokeReceivedEventException((string)$errors);
         }
         $email = $event->getEmail();
+        $category = $event->getCategory();
         $joke = $event->getJoke();
-        $this->commandBus->dispatch(new SendJokeEmail($email, $joke));
-        $this->commandBus->dispatch(new LogJoke($email, $joke));
+        $this->commandBus->dispatch(new SendJokeEmail($email, $category, $joke));
+        $this->commandBus->dispatch(new LogJoke($email, $category, $joke));
     }
 
 

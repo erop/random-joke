@@ -18,7 +18,7 @@ class SendJokeEmailHandlerTest extends CustomTestCase
      */
     public function testEmailWithJokeIsSent(): void
     {
-        $command = new SendJokeEmail('erop1@example.com', 'Mwa-ha-ha!');
+        $command = new SendJokeEmail('erop1@example.com', 'nerdy', 'Mwa-ha-ha!');
         $mailer = $this->createMock(MailerInterface::class);
         $subject = 'Joke Email Subject';
         $email = (new Email())
@@ -36,9 +36,9 @@ class SendJokeEmailHandlerTest extends CustomTestCase
 
     public function getInvalidSendJokeEmails(): Generator
     {
-        yield [new SendJokeEmail('erop1@example.com', ''), 1];
-        yield [new SendJokeEmail('erop2example.com', 'WTF!'), 1];
-        yield [new SendJokeEmail('', ''), 2];
+        yield [new SendJokeEmail('erop1@example.com', 'nerdy', ''), 1];
+        yield [new SendJokeEmail('erop2example.com', 'nerdy', 'WTF!'), 1];
+        yield [new SendJokeEmail('', '', ''), 3];
     }
 
     /**

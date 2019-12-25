@@ -16,11 +16,11 @@ class LogJokeHandlerTest extends CustomTestCase
      */
     public function testJokeIsLogged(): void
     {
-        $command = new LogJoke('email1@example.com', 'Mwa-ha-ha!');
+        $command = new LogJoke('email1@example.com', 'nerdy',  'Mwa-ha-ha!');
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())
             ->method('info')
-            ->with($command->getJoke());
+            ->with('Category: nerdy; Joke: Mwa-ha-ha!');
         $handler = new LogJokeHandler($logger, $this->getValidatorWithErrorsCount(0));
         $this->assertInstanceOf(MessageHandlerInterface::class, $handler);
         $handler($command);
@@ -28,9 +28,9 @@ class LogJokeHandlerTest extends CustomTestCase
 
     public function getInvalidLogJokes(): Generator
     {
-        yield [new LogJoke('email1@example.com', ''), 1];
-        yield [new LogJoke('email2example.com', 'WFT!'), 1];
-        yield [new LogJoke('email2example.com', ''), 2];
+        yield [new LogJoke('email1@example.com', '', ''), 2];
+        yield [new LogJoke('email2example.com', 'nerdy', 'WFT!'), 1];
+        yield [new LogJoke('email2example.com', '', '' ), 3];
     }
 
     /**

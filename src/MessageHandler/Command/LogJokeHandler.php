@@ -38,7 +38,7 @@ class LogJokeHandler implements MessageHandlerInterface
         if (count($errors) > 0) {
             throw new LogJokeException((string )$errors);
         }
-        $this->logger->info($command->getJoke());
+        $this->logger->info(sprintf('Category: %s; Joke: %s', $command->getCategory(), $command->getJoke()));
     }
 
 }

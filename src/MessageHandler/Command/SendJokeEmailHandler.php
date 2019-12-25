@@ -31,12 +31,15 @@ class SendJokeEmailHandler implements MessageHandlerInterface
      * SendJokeEmailHandler constructor.
      * @param MailerInterface $mailer
      * @param ValidatorInterface $validator
-     * @param string $jokeEmailSubject
+     * @param string $jokeEmailSubjectTemplate
      */
-    public function __construct(MailerInterface $mailer, ValidatorInterface $validator, string $jokeEmailSubject)
-    {
+    public function __construct(
+        MailerInterface $mailer,
+        ValidatorInterface $validator,
+        string $jokeEmailSubjectTemplate
+    ) {
         $this->mailer = $mailer;
-        $this->subject = $jokeEmailSubject;
+        $this->subject = $jokeEmailSubjectTemplate;
         $this->validator = $validator;
     }
 
@@ -53,7 +56,7 @@ class SendJokeEmailHandler implements MessageHandlerInterface
         $email = (new Email())
             ->from('admin@project.com')
             ->to($command->getEmail())
-            ->subject($this->subject)
+            ->subject(sprintf($this->subject, $command->getCategory()))
             ->text($command->getJoke());
         $this->mailer->send($email);
     }

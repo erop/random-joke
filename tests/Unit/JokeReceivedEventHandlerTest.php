@@ -43,7 +43,7 @@ class JokeReceivedEventHandlerTest extends CustomTestCase
      */
     public function getSendJokeEmailCommand(JokeReceivedEvent $event): SendJokeEmail
     {
-        return new SendJokeEmail($event->getEmail(), $event->getJoke());
+        return new SendJokeEmail($event->getEmail(), $event->getCategory(), $event->getJoke());
     }
 
     /**
@@ -52,7 +52,7 @@ class JokeReceivedEventHandlerTest extends CustomTestCase
      */
     public function getLogJokeCommand(JokeReceivedEvent $event): LogJoke
     {
-        return new LogJoke($event->getEmail(), $event->getJoke());
+        return new LogJoke($event->getEmail(), $event->getCategory(), $event->getJoke());
     }
 
     public function getInvalidJokeReceivedEvents(): Generator
