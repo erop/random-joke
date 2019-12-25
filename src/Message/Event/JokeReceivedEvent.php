@@ -4,6 +4,7 @@
 namespace App\Message\Event;
 
 
+use App\Validator\Constraints\JokeCategory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class JokeReceivedEvent
@@ -13,6 +14,7 @@ class JokeReceivedEvent
      * @Assert\Email()
      */
     private $email;
+
     /**
      * @var string
      * @Assert\NotBlank()
@@ -20,14 +22,22 @@ class JokeReceivedEvent
     private $joke;
 
     /**
+     * @var string
+     * @JokeCategory()
+     */
+    private $category;
+
+    /**
      * JokeReceivedEvent constructor.
      * @param string $email
+     * @param string $category
      * @param string $joke
      */
-    public function __construct(string $email, string $joke)
+    public function __construct(string $email, string $category, string $joke)
     {
         $this->email = $email;
         $this->joke = $joke;
+        $this->category = $category;
     }
 
     /**
@@ -46,4 +56,11 @@ class JokeReceivedEvent
         return $this->joke;
     }
 
+    /**
+     * @return string
+     */
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
 }

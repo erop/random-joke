@@ -20,7 +20,7 @@ class JokeReceivedEventHandlerTest extends CustomTestCase
      */
     public function testEventHandledSuccessfully(): void
     {
-        $event = new JokeReceivedEvent('email1@example.com', 'Mwa-ha-ha!');
+        $event = new JokeReceivedEvent('email1@example.com', 'nerdy', 'Mwa-ha-ha!');
         $emailCommand = $this->getSendJokeEmailCommand($event);
         $logCommand = $this->getLogJokeCommand($event);
         $commandBus = $this->createMock(MessageBusInterface::class);
@@ -57,9 +57,9 @@ class JokeReceivedEventHandlerTest extends CustomTestCase
 
     public function getInvalidJokeReceivedEvents(): Generator
     {
-        yield [new JokeReceivedEvent('email2@example.com', ''), 1];
-        yield [new JokeReceivedEvent('email2example.com', 'WTF!'), 1];
-        yield [new JokeReceivedEvent('email2example.com', ''), 2];
+        yield [new JokeReceivedEvent('email2@example.com', '', 'WTF'), 1];
+        yield [new JokeReceivedEvent('email2example.com', 'nerdy', 'WTF!'), 1];
+        yield [new JokeReceivedEvent('email2example.com', '', ''), 3];
     }
 
     /**
