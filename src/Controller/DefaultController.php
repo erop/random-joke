@@ -49,6 +49,7 @@ class DefaultController extends AbstractController
             $dto = $form->getData();
             $command = new SendJokeCommand($dto->getEmail(), $dto->getCategory());
             $this->messageBus->dispatch($command);
+            $this->addFlash('send_joke_result', sprintf('Sending random joke to %s accepted', $dto->getEmail()));
         }
         return $this->render('default/index.html.twig', ['form' => $form->createView()]);
     }
