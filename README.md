@@ -19,5 +19,8 @@
 	Matthias Noback
 
 
+### Build, test and run
+Use Makefile commands (`Symfony CLI` and `make` required to be available in $PATH): `$ make build`, `$ make test`, `$ make run`
+
 
 
