@@ -1,16 +1,16 @@
-### Условия задачи:
+### The task:
 
-	На страницу вывести форму с полями input:email, select:категория из http://www.icndb.com/api/ При заполнении формы на емейл нужно отправить письмо с темой "Случайная шутка из %имя категории%"
-	В теле письма должна быть случайная шутка из этой категории Эту же шутку нужно записать в файл на диске
+    Create HTML-form with fields input:email, select:category from http://www.icndb.com/api/ After submitting the form an email message should be dispatched with subject "Random joke of %category name%"
+    The body of the message should contain the joke from the choosen category. The text should be written into the file on the local disk.
 
-### Требования:
+### Requirements:
 
-	Работу с API необходимо реализовать самому с использованием http://docs.guzzlephp.org/en/stable/
-	Приложение должно быть на базе Symfony (3 или 4)
-	Соответствие кода принципам SOLID
-	Полное покрытие модульными и функциональными тестами с использованием phpunit
+    Working with API should be implemented with http://docs.guzzlephp.org/en/stable/
+    The app should use Symfony (3 or 4)
+    The app code should follow SOLID principles
+    The app code should be covered with PHPUnit tests
 
-### Рекомендуемые книги:
+### Recommended books:
 
 	Martin, Robert C. (2009). Clean Code: A Handbook of Agile Software Craftsmanship
 
